@@ -3,84 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Dashboard</title>
+    <title>Teacher Training 2026 | Cluster Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
-            --light: #ecf0f1;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --text: #1e293b;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, #e0e7ff, transparent), 
+                              radial-gradient(circle at bottom left, #fef2f2, transparent);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 15px; /* Reduced padding for mobile edges */
+            box-sizing: border-box;
         }
 
-        .dashboard-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             text-align: center;
-            width: 90%;
-            max-width: 500px;
+            box-sizing: border-box;
         }
 
-        h1 { color: var(--primary); margin-bottom: 1.5rem; }
+        .header { margin-bottom: 30px; }
+        
+        .logo-row { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allows logos to stack if screen is very narrow */
+        }
+        
+        .site-logo { 
+            height: 45px; 
+            width: auto; 
+            max-width: 140px; 
+            object-fit: contain;
+        }
 
-        .button-group {
+        h1 { 
+            font-weight: 800; 
+            color: var(--text); 
+            margin-bottom: 10px; 
+            font-size: clamp(1.4rem, 5vw, 1.8rem); /* Fluid typography */
+            line-height: 1.2;
+        }
+        
+        p.subtitle { 
+            color: #64748b; 
+            font-weight: 500; 
+            margin-bottom: 30px; 
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            padding: 0 10px;
+        }
+
+        /* Cluster Grid */
+        .cluster-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .cluster-card {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 25px 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-        }
-
-        .dash-btn {
-            padding: 15px 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            align-items: center;
             text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .cluster-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+
+        .cluster-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .cluster-name {
+            font-weight: 800;
+            color: var(--text);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .cluster-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .btn-select {
+            margin-top: 15px;
+            background: var(--primary);
             color: white;
-            border-radius: 8px;
-            transition: transform 0.2s, background 0.3s;
-            display: block;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            width: 100%; /* Makes button tap-friendly on mobile */
+            max-width: 160px;
         }
 
-        .dash-btn:hover {
-            transform: translateY(-3px);
-            opacity: 0.9;
+        /* Mobile Optimization */
+        @media (max-width: 650px) {
+            body {
+                padding: 10px;
+                align-items: flex-start; /* Better for long scrolling content */
+                padding-top: 40px;
+            }
+
+            .glass-card { 
+                padding: 30px 15px;
+                border-radius: 20px;
+            }
+
+            .cluster-grid { 
+                grid-template-columns: 1fr; /* Stacks cards vertically */
+                gap: 15px;
+            }
+
+            .cluster-card {
+                padding: 20px;
+            }
+
+            .logo-row {
+                gap: 15px;
+            }
+
+            .site-logo {
+                height: 35px; /* Smaller logos for small screens */
+            }
         }
 
-        /* Specific Button Colors */
-        .panay { background-color: #e67e22; }
-        .mindanao { background-color: #27ae60; }
-        .github { background-color: #333; margin-top: 10px; }
-
-        .footer {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #7f8c8d;
+        /* Very Small Screens (iPhone SE, etc) */
+        @media (max-width: 375px) {
+            h1 { font-size: 1.25rem; }
+            .cluster-icon { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <h1>Registration Portal</h1>
-        <p>Please select your region to proceed:</p>
-        
-        <div class="button-group">
-            <a href="panay-registration.html" class="dash-btn panay">Panay Registration</a>
-            <a href="mindanao-registration.html" class="dash-btn mindanao">Mindanao Registration</a>
+    <div class="glass-card">
+        <div class="header">
+            <div class="logo-row">
+                <img src="EDULEARN LOGO.png" alt="EDULEARN" class="site-logo">
+                <img src="ITECH LOGO.png" alt="ITECH" class="site-logo">
+            </div>
+            <h1>Teachers Training 2026</h1>
+            <p class="subtitle">Please select your regional cluster to begin registration</p>
         </div>
 
-        <div class="footer">
-            © 2026 Edulearn Technologies Inc.
+        <div class="cluster-grid">
+            <a href="panay-registration.html" class="cluster-card">
+                <div class="cluster-icon">🏝️</div>
+                <div class="cluster-name">Panay Cluster</div>
+                <div class="cluster-desc">Western Visayas Regions<br>(Iloilo, Aklan, Capiz, Antique)</div>
+                <div class="btn-select">Select Panay</div>
+            </a>
+
+            <a href="mindanao-registration.html" class="cluster-card">
+                <div class="cluster-icon">⛰️</div>
+                <div class="cluster-name">Mindanao Cluster</div>
+                <div class="cluster-desc">All Mindanao Regions<br>(Davao, Zamboanga, CDO, etc.)</div>
+                <div class="btn-select">Select Mindanao</div>
+            </a>
         </div>
+
+        <p style="margin-top: 30px; font-size: 0.7rem; color: #94a3b8; font-weight: 600; line-height: 1.4;">
+            Registration period starts March 30, 2026.
+        </p>
     </div>
 
 </body>
