@@ -3,417 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light">
-    <title>Teacher Training 2026 | Registration</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Teacher Training 2026 | Cluster Selection</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- LAYOUT & LOGO STYLES --- */
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo-row { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 20px; }
-        .site-logo { height: 45px; width: auto; object-fit: contain; }
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
 
-        /* --- TIMELINE/COUNTDOWN STYLES --- */
-        .timeline-container {
-            background: #fdf2f2;
-            border: 1.5px solid #f87171;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 25px;
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, #e0e7ff, transparent), 
+                              radial-gradient(circle at bottom left, #fef2f2, transparent);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 15px; /* Reduced padding for mobile edges */
+            box-sizing: border-box;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             text-align: center;
-        }
-        .timeline-title { font-weight: 800; color: #b91c1c; font-size: 0.9rem; margin-bottom: 5px; }
-        .countdown-text { font-family: monospace; font-weight: 700; color: #1e293b; font-size: 1.1rem; }
-        .registration-closed-msg { font-weight: 700; color: #b91c1c; margin-top: 10px; }
-        
-        /* State for disabled form */
-        .form-locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
-
-        @media (max-width: 480px) {
-            .logo-row { gap: 15px; }
-            .site-logo { height: 40px; }
-            .flex-mobile { flex-direction: column; gap: 0 !important; }
+            box-sizing: border-box;
         }
 
-        /* --- OVERLAY --- */
-        #loadingOverlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.98); z-index: 9999;
-            flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        .header { margin-bottom: 30px; }
+        
+        .logo-row { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allows logos to stack if screen is very narrow */
         }
-        .spinner {
-            width: 50px; height: 50px; border: 5px solid #f3f3f3;
-            border-top: 5px solid #6366f1; border-radius: 50%;
-            animation: spin 1s linear infinite;
+        
+        .site-logo { 
+            height: 45px; 
+            width: auto; 
+            max-width: 140px; 
+            object-fit: contain;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- NAME CONFIRMATION --- */
-        .confirm-btn {
-            background: #f1f5f9; color: #ff0000; border: 1.5px solid #cbd5e1;
-            padding: 10px 15px; border-radius: 10px; font-size: 0.8rem;
-            font-weight: 700; cursor: pointer; margin-top: 10px;
-            transition: all 0.2s; display: flex; align-items: center; gap: 8px; width: fit-content;
+        h1 { 
+            font-weight: 800; 
+            color: var(--text); 
+            margin-bottom: 10px; 
+            font-size: clamp(1.4rem, 5vw, 1.8rem); /* Fluid typography */
+            line-height: 1.2;
         }
-        .confirm-btn.active { background: #ecfdf5; color: #059669; border-color: #10b981; }
         
-        .section-title { font-weight: 800; color: #6366f1; margin-bottom: 15px; border-left: 4px solid #6366f1; padding-left: 10px; }
-        .checkmark { height: 18px; width: 18px; background-color: #f1f5f9; border: 1.5px solid #cbd5e1; border-radius: 4px; margin-right: 10px; }
-        
-        input[type="date"] { font-family: inherit; color: #1e293b; }
+        p.subtitle { 
+            color: #64748b; 
+            font-weight: 500; 
+            margin-bottom: 30px; 
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            padding: 0 10px;
+        }
 
-        /* --- TOPIC STYLING --- */
-        .topic-item {
-            display: flex; align-items: center; gap: 10px;
-            font-size: 0.85rem; font-weight: 600; color: #475569;
-            margin-bottom: 8px; cursor: pointer; padding: 5px;
-            border-radius: 6px; transition: background 0.2s;
+        /* Cluster Grid */
+        .cluster-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-        .topic-item:hover { background: #fff; color: #6366f1; }
-        .topic-item input { width: 18px; height: 18px; accent-color: #6366f1; cursor: pointer; }
-        
-        .day-header {
-            font-weight: 800; font-size: 0.8rem; color: #1e293b;
-            background: #e0e7ff; padding: 5px 10px; border-radius: 6px;
-            margin: 15px 0 10px;
+
+        .cluster-card {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 25px 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            box-sizing: border-box;
         }
-        .time-label { font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; text-transform: uppercase; }
-        
-        #sessionSelectionWrapper {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.4s ease;
+
+        .cluster-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+
+        .cluster-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .cluster-name {
+            font-weight: 800;
+            color: var(--text);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .cluster-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .btn-select {
+            margin-top: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            width: 100%; /* Makes button tap-friendly on mobile */
+            max-width: 160px;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 650px) {
+            body {
+                padding: 10px;
+                align-items: flex-start; /* Better for long scrolling content */
+                padding-top: 40px;
+            }
+
+            .glass-card { 
+                padding: 30px 15px;
+                border-radius: 20px;
+            }
+
+            .cluster-grid { 
+                grid-template-columns: 1fr; /* Stacks cards vertically */
+                gap: 15px;
+            }
+
+            .cluster-card {
+                padding: 20px;
+            }
+
+            .logo-row {
+                gap: 15px;
+            }
+
+            .site-logo {
+                height: 35px; /* Smaller logos for small screens */
+            }
+        }
+
+        /* Very Small Screens (iPhone SE, etc) */
+        @media (max-width: 375px) {
+            h1 { font-size: 1.25rem; }
+            .cluster-icon { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-        <h2 id="statusTitle" style="margin-top: 20px; font-weight: 800; color: #1e293b;">Processing...</h2>
-        <p id="statusMsg" style="color: #475569; padding: 0 20px;">Registering your slot, please wait.</p>
-        <button id="closeBtn" onclick="location.reload()" class="btn" style="display:none; margin-top:25px; max-width: 200px;">Back</button>
-    </div>
-
     <div class="glass-card">
         <div class="header">
             <div class="logo-row">
-                <img src="EDULEARN LOGO.png" alt="EDULEARN Logo" class="site-logo">
-                <img src="ITECH LOGO.png" alt="ITECH Logo" class="site-logo">
+                <img src="EDULEARN LOGO.png" alt="EDULEARN" class="site-logo">
+                <img src="ITECH LOGO.png" alt="ITECH" class="site-logo">
             </div>
-            <h2>Teachers Training Registration</h2>
-            <p>2026 Professional Development Series</p>
+            <h1>Teachers Training 2026</h1>
+            <p class="subtitle">Please select your regional cluster to begin registration</p>
         </div>
 
-        <div class="timeline-container">
-            <div class="timeline-title"></div>
-            <div id="countdown" class="countdown-text">Calculating time...</div>
-            <p id="lockMsg" class="registration-closed-msg">Form will unlock at exactly March 30, 2026, 12:00 PM (PH Time)</p>
+        <div class="cluster-grid">
+            <a href="panay-registration.html" class="cluster-card">
+                <div class="cluster-icon">🏝️</div>
+                <div class="cluster-name">Panay Cluster</div>
+                <div class="cluster-desc">Western Visayas Regions<br>(Iloilo, Aklan, Capiz, Antique)</div>
+                <div class="btn-select">Select Panay</div>
+            </a>
+
+            <a href="mindanao-registration.html" class="cluster-card">
+                <div class="cluster-icon">⛰️</div>
+                <div class="cluster-name">Mindanao Cluster</div>
+                <div class="cluster-desc">All Mindanao Regions<br>(Davao, Zamboanga, CDO, etc.)</div>
+                <div class="btn-select">Select Mindanao</div>
+            </a>
         </div>
 
-        <form id="regForm" class="form-locked">
-            <div class="form-section">
-                <div class="section-title">Section 1: Personal Details</div>
-                <div style="display: flex; gap: 15px;" class="flex-mobile">
-                    <div class="input-group" style="flex: 2;">
-                        <label for="firstname">First Name</label>
-                        <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
-                    </div>
-                    <div class="input-group" style="flex: 2;">
-                        <label for="lastname">Last Name</label>
-                        <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 15px;" class="flex-mobile">
-                    <div class="input-group" style="flex: 1;">
-                        <label for="mi">M.I.</label>
-                        <input type="text" id="mi" name="mi" placeholder="Initial" maxlength="2">
-                    </div>
-                    <div class="input-group" style="flex: 2;">
-                        <label for="suffix">Suffix</label>
-                        <select id="suffix" name="suffix">
-                            <option value="None" selected>None</option>
-                            <option value="Jr.">Jr.</option>
-                            <option value="Sr.">Sr.</option>
-                            <option value="II">II</option>
-                            <option value="III">III</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <button type="button" id="nameConfirmBtn" class="confirm-btn">
-                        <span id="confirmIcon">⬜</span> Confirm name spelling for Certificate.
-                    </button>
-                    <input type="checkbox" id="nameCheckHidden" required style="display:none;">
-                </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="dob">Date of Birth</label>
-                        <input type="date" id="dob" name="dob" required>
-                    </div>
-                    <div class="input-group" style="flex: 0.5;">
-                        <label for="gender">Gender</label>
-                        <select id="gender" name="gender" required>
-                            <option value="" disabled selected>Select...</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="specialization">Specialization/Subject</label>
-                        <input type="text" id="specialization" name="specialization" placeholder="e.g. Science, ICT" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="mobileInput">Contact Number</label>
-                        <input type="tel" name="mobile" id="mobileInput" placeholder="09XXXXXXXXX" maxlength="11" required>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title">Section 2: School Information</div>
-                <div class="input-group">
-                    <label for="institution">School Name</label>
-                    <input type="text" id="institution" name="institution" placeholder="Full School Name" required>
-                </div>
-                <div class="input-group">
-                    <label for="province">Province</label>
-                    <input type="text" id="province" name="province" placeholder="Enter Province" required>
-                </div>
-                <div class="input-group">
-                    <label for="position">Level Handled</label>
-                    <select id="position" name="position" required>
-                        <option value="" disabled selected>Select Level</option>
-                        <option value="Elementary">Elementary</option>
-                        <option value="Junior High">Junior High School</option>
-                        <option value="Senior High">Senior High School</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title">Section 3: Training Selection</div>
-                <div style="display: flex; gap: 15px;" class="flex-mobile">
-                    <div class="input-group" style="flex: 1;">
-                        <label for="dateSelect">Training Batch</label>
-                        <select id="dateSelect" name="schedule" required>
-                             <option value="batch2">Batch 4 - June 1–5 2026</option>
-                        </select>
-                    </div>
-                    <div class="input-group" style="flex: 1;">
-                        <label for="daySelect">Select Training Day</label>
-                        <select id="daySelect" required>
-                            <option value="" disabled selected>Choose Day...</option>
-                            <option value="day1">Day 1: ICT Essentials</option>
-                            <option value="day2">Day 2: Programming</option>
-                            <option value="day3">Day 3: ICT & Robotics</option>
-                            <option value="day4">Day 4: Robotics & Circuits</option>
-                            <option value="day5">Day 5: IoT & Challenges</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="sessionSelectionWrapper">
-                    <p style="font-size: 0.8rem; font-weight: 700; color: #6366f1; margin-bottom: 2px;">Select your Sessions:</p>
-                    <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 10px;">(Limit: 1 session for AM and 1 for PM)</p>
-                    
-                    <div class="topic-scroll-area" style="max-height: 400px; overflow-y: auto; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0;">
-                        <div id="day1Content" class="day-content" style="display:none;">
-                            <div class="day-header">DAY 1 - ICT ESSENTIALS</div>
-                            <div class="time-label">MORNING</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D1-AM-ICT-Essentials"> CompuThinkers K – ICT Essentials for Young Learners</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D1-AM-ICT-Computer-Fundamentals"> CompuThinkers 1 – Computer Fundamentals for Kids</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D1-AM-Scratch-mBlock"> Scratch Fun with mBlock Game Features – Code Games and Learn</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D1-AM-Productivity-Tools"> Productivity Tools – Word Desktop Publishing and Online Collaboration Tools</label>
-                            <div class="time-label">AFTERNOON</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D1-PM-Scratch-Jr"> CompuThinkers 2 – Basic Programming with Scratch Jr</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D1-PM-Web-Design"> Web Design Basics: HTML and CSS – Web Design and Concepts</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D1-PM-Inkscape"> Designing Vector Graphics with Inkscape - Understanding Vector and Raster Design with Inkscape</label>
-                        </div>
-                        <div id="day2Content" class="day-content" style="display:none;">
-                            <div class="day-header">DAY 2 - ICT & PROGRAMMING</div>
-                            <div class="time-label">MORNING</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D2-AM-PowerPoint"> CompuThinkers 3 – Working with PowerPoint</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D2-AM-Video-Creation"> Video Content Creation Made Easy - Lights Camera Click with Clipchamp</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D2-AM-Java-Intro"> Java Programming Fundamentals - Introduction to Programming with Java</label>
-                            <div class="time-label">AFTERNOON</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D2-PM-HTML-Basics"> CompuThinkers 4 – HTML Basics</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D2-PM-Python"> Python Coding Essentials - Learning to Code with Python</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D2-PM-ECommerce"> E-Commerce: Business in the Digital Age - How to Market Your Product Online?</label>
-                        </div>
-                        <div id="day3Content" class="day-content" style="display:none;">
-                            <div class="day-header">DAY 3 - ICT & ROBOTICS INTRO</div>
-                            <div class="time-label">MORNING</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D3-AM-Multimedia"> CompuThinkers 5–6 – Multimedia Creation and Digital Presentation</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D3-AM-Media-Literacy"> Media and Information Literacy / Empowerment Technologies</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D3-AM-Java-Advance"> Java Advanced - Designing User Interfaces with Java GUI</label>
-                            <div class="time-label">AFTERNOON</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D3-PM-Arduino-Intro"> Arduino 1 - Starting with Arduino </label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D3-PM-RoboStarter"> RoboClass RoboStarter K – A Stepping Stone in Robotics World </label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D3-PM-RoboPrime-1"> RoboClass RoboPrime1- Introduction to Codey Rocky using the Mobile App</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D3-PM-RoboJuno-1"> RoboClass - RoboJuno 1- CyberPi Console</label>
-                        </div>
-                        <div id="day4Content" class="day-content" style="display:none;">
-                            <div class="day-header">DAY 4 - ROBOTICS & CIRCUITS</div>
-                            <div class="time-label">MORNING</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D4-AM-Arduino-Exp"> Arduino 2 - Exploring Arduino</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D4-AM-Codey-Rocky"> RoboClass - RoboPrime 2 -3 Let’s Code with Codey Rocky</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D4-AM-Robo-Juno-2"> RoboClass - RoboJuno 2 – Assemble mBot2</label>
-                            <div class="time-label">AFTERNOON</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D4-PM-Arduino-Circuits"> Arduino 3- 4 - Designing and Building Arduino Circuits</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D4-PM-MicroBit"> RoboClass - RoboPrime 4 - MicroBit Companion</label>
-                        </div>
-                        <div id="day5Content" class="day-content" style="display:none;">
-                            <div class="day-header">DAY 5 - IoT & CHALLENGES</div>
-                            <div class="time-label">MORNING</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D5-AM-Arduino-R4"> Arduino UNO R4 - Blink Build and Learn</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D5-AM-MicroBit-Scratch"> RoboClass - RoboPrime 5 MicroBit with Scratch</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D5-AM-Mbot-2-Manual-Challenge"> RoboClass - mBot 2: Manual Challenge </label>
-                            <div class="time-label">AFTERNOON</div>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D5-PM-Arduino-IoT"> Arduino UNO R4 - Code Connect and Create with IoT</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D5-PM-RingBit"> RoboClass - RoboPrime 6 - Build and Connect with RingBit MicroBit</label>
-                            <label class="topic-item"><input type="checkbox" name="topic" value="D5-PM-Autonomous-Challenge"> RoboClass - mBot 2: Autonomous Challenge</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <label class="check-container" style="display: flex; align-items: flex-start; cursor: pointer;">
-                    <input type="checkbox" required style="display: none;" id="finalCheck">
-                    <span class="checkmark"></span>
-                    <span style="font-size: 0.85rem; color: #475569; line-height: 1.4;">I confirm my attendance for the training.</span>
-                </label>
-            </div>
-            <button type="submit" class="btn" id="submitBtn" disabled>Registration Starts March 30</button>
-        </form>
+        <p style="margin-top: 30px; font-size: 0.7rem; color: #94a3b8; font-weight: 600; line-height: 1.4;">
+            Registration period starts March 30, 2026.
+        </p>
     </div>
 
-    <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwIg1g8k7PWPMEb2Q9Xn2xRNPi-Nwc3T33Y30156aoQpFq2BscOlIa1VH4AJuC-Sfn9dQ/exec';
-
-        // --- COUNTDOWN ---
-        const startTime = new Date("2026-03-30T12:00:00+08:00").getTime();
-        function updateCountdown() {
-            const distance = startTime - new Date().getTime();
-            const btn = document.getElementById('submitBtn');
-            if (distance < 0) {
-                document.getElementById('regForm').classList.remove('form-locked');
-                btn.disabled = false;
-                btn.innerText = "Submit Registration";
-                document.getElementById('countdown').innerHTML = "REGISTRATION IS NOW OPEN";
-                document.getElementById('countdown').style.color = "#059669";
-                document.getElementById('lockMsg').style.display = "none";
-                return;
-            }
-            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((distance % (1000 * 60)) / 1000);
-            document.getElementById('countdown').innerHTML = `${d}d ${h}h ${m}m ${s}s`;
-        }
-        setInterval(updateCountdown, 1000); updateCountdown();
-
-        // --- UI TOGGLES ---
-        const nameConfirmBtn = document.getElementById('nameConfirmBtn');
-        nameConfirmBtn.addEventListener('click', () => {
-            const check = document.getElementById('nameCheckHidden');
-            check.checked = !check.checked;
-            nameConfirmBtn.classList.toggle('active', check.checked);
-            document.getElementById('confirmIcon').innerText = check.checked ? "✅" : "⬜";
-        });
-
-        const dateSelect = document.getElementById('dateSelect');
-        const daySelect = document.getElementById('daySelect');
-        
-        function toggleSessions() {
-            const wrapper = document.getElementById('sessionSelectionWrapper');
-            if (dateSelect.value && daySelect.value) {
-                // Clear existing selections when day changes to avoid cross-day selection errors
-                document.querySelectorAll('input[name="topic"]').forEach(cb => cb.checked = false);
-                
-                wrapper.style.display = 'block';
-                setTimeout(() => wrapper.style.opacity = '1', 10);
-                document.querySelectorAll('.day-content').forEach(div => div.style.display = 'none');
-                document.getElementById(daySelect.value + 'Content').style.display = 'block';
-            } else {
-                wrapper.style.opacity = '0';
-                setTimeout(() => wrapper.style.display = 'none', 400);
-            }
-        }
-        dateSelect.addEventListener('change', toggleSessions);
-        daySelect.addEventListener('change', toggleSessions);
-
-        // --- 1 PER AM/PM LOGIC ---
-        document.querySelectorAll('input[name="topic"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    const isAM = this.value.includes("-AM-");
-                    const timeGroup = isAM ? "-AM-" : "-PM-";
-                    const currentDayId = daySelect.value + 'Content';
-                    
-                    // Uncheck others in the same time group (AM or PM) for the selected day
-                    const siblings = document.querySelectorAll(`#${currentDayId} input[name="topic"]`);
-                    siblings.forEach(sibling => {
-                        if (sibling !== this && sibling.value.includes(timeGroup)) {
-                            sibling.checked = false;
-                        }
-                    });
-                }
-            });
-        });
-
-        // --- SUBMIT ---
-        document.getElementById('regForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!document.getElementById('nameCheckHidden').checked) { alert("Please confirm your name spelling first."); return; }
-
-            const selectedCheckboxes = Array.from(document.querySelectorAll('input[name="topic"]:checked'));
-            if (selectedCheckboxes.length === 0) { alert("Please select at least one training session."); return; }
-
-            const topicFullNames = selectedCheckboxes.map(cb => cb.parentElement.innerText.trim());
-            const topicCodes = selectedCheckboxes.map(cb => cb.value);
-
-            const overlay = document.getElementById('loadingOverlay');
-            document.getElementById('submitBtn').disabled = true;
-            overlay.style.display = 'flex';
-            
-            try {
-                const formData = new FormData(e.target);
-                const dataObj = {};
-                formData.forEach((value, key) => { if (key !== 'topic') dataObj[key] = value; });
-
-                const fname = dataObj.firstname.trim();
-                const lname = dataObj.lastname.trim();
-                const suffix = (dataObj.suffix && dataObj.suffix !== "None") ? " " + dataObj.suffix : "";
-                dataObj['fullname'] = `${fname} ${lname}${suffix}`.replace(/\s+/g, ' ').toUpperCase();
-
-                dataObj['workshop'] = topicFullNames.join(" | ");
-                dataObj['topic'] = topicCodes.join(", ");
-                
-                const response = await fetch(scriptURL, { method: 'POST', body: new URLSearchParams(dataObj) });
-                const result = await response.text();
-
-                if (result === "Success") {
-                    document.getElementById('statusTitle').innerText = "Success!";
-                    document.getElementById('statusMsg').innerText = "Registration complete.";
-                } else if (result === "DUPLICATE_EMAIL") {
-                    document.getElementById('statusTitle').innerText = "Notice";
-                    document.getElementById('statusMsg').innerText = "Email already registered.";
-                    document.getElementById('submitBtn').disabled = false;
-                } else { throw new Error(result); }
-            } catch (err) {
-                document.getElementById('statusTitle').innerText = "Error";
-                document.getElementById('statusMsg').innerText = "Submission failed.";
-                document.getElementById('submitBtn').disabled = false;
-            } finally { document.getElementById('closeBtn').style.display = 'block'; }
-        });
-    </script>
 </body>
 </html>
