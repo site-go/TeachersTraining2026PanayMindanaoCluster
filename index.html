@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Dashboard</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .dashboard-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 { color: var(--primary); margin-bottom: 1.5rem; }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .dash-btn {
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            border-radius: 8px;
+            transition: transform 0.2s, background 0.3s;
+            display: block;
+        }
+
+        .dash-btn:hover {
+            transform: translateY(-3px);
+            opacity: 0.9;
+        }
+
+        /* Specific Button Colors */
+        .panay { background-color: #e67e22; }
+        .mindanao { background-color: #27ae60; }
+        .github { background-color: #333; margin-top: 10px; }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h1>Registration Portal</h1>
+        <p>Please select your region to proceed:</p>
+        
+        <div class="button-group">
+            <a href="panay-registration.html" class="dash-btn panay">Panay Registration</a>
+            <a href="mindanao-registration.html" class="dash-btn mindanao">Mindanao Registration</a>
+            <hr>
+            <a href="https://github.com/YOUR-USERNAME/YOUR-REPO" target="_blank" class="dash-btn github">View GitHub Repository</a>
+        </div>
+
+        <div class="footer">
+            © 2026 Registration System
+        </div>
+    </div>
+
+</body>
+</html>
