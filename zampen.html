@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Teacher Training 2026 | Registration</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- LAYOUT & LOGO STYLES --- */
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo-row { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 20px; }
+        .site-logo { height: 45px; width: auto; object-fit: contain; }
+
+        /* --- TIMELINE/COUNTDOWN STYLES --- */
+        .timeline-container {
+            background: #fdf2f2;
+            border: 1.5px solid #f87171;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .timeline-title { font-weight: 800; color: #b91c1c; font-size: 0.9rem; margin-bottom: 5px; }
+        .countdown-text { font-family: monospace; font-weight: 700; color: #1e293b; font-size: 1.1rem; }
+        .registration-closed-msg { font-weight: 700; color: #b91c1c; margin-top: 10px; }
+        
+        .form-locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+
+        @media (max-width: 480px) {
+            .logo-row { gap: 15px; }
+            .site-logo { height: 40px; }
+            .flex-mobile { flex-direction: column; gap: 0 !important; }
+        }
+
+        /* --- OVERLAY --- */
+        #loadingOverlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98); z-index: 9999;
+            flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 5px solid #f3f3f3;
+            border-top: 5px solid #6366f1; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- UI ELEMENTS --- */
+        .confirm-btn {
+            background: #f1f5f9; color: #ff0000; border: 1.5px solid #cbd5e1;
+            padding: 10px 15px; border-radius: 10px; font-size: 0.8rem;
+            font-weight: 700; cursor: pointer; margin-top: 10px;
+            transition: all 0.2s; display: flex; align-items: center; gap: 8px; width: fit-content;
+        }
+        .confirm-btn.active { background: #ecfdf5; color: #059669; border-color: #10b981; }
+        
+        .section-title { font-weight: 800; color: #6366f1; margin-bottom: 15px; border-left: 4px solid #6366f1; padding-left: 10px; }
+        .checkmark { height: 18px; width: 18px; background-color: #f1f5f9; border: 1.5px solid #cbd5e1; border-radius: 4px; margin-right: 10px; }
+        
+        /* --- TOPIC STYLING --- */
+        .topic-item {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 0.85rem; font-weight: 600; color: #475569;
+            margin-bottom: 8px; cursor: pointer; padding: 8px;
+            border-radius: 8px; transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .topic-item:hover { background: #fff; border-color: #e2e8f0; }
+        .topic-item.selected { background: #e0e7ff; color: #4338ca; border-color: #6366f1; }
+        .topic-item input { width: 18px; height: 18px; accent-color: #6366f1; cursor: pointer; }
+        
+        .day-header {
+            font-weight: 800; font-size: 0.8rem; color: #1e293b;
+            background: #e2e8f0; padding: 5px 10px; border-radius: 6px;
+            margin: 20px 0 10px;
+        }
+        .time-label { font-size: 0.7rem; font-weight: 800; color: #6366f1; margin: 10px 0 5px; text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <h2 id="statusTitle" style="margin-top: 20px; font-weight: 800; color: #1e293b;">Processing...</h2>
+        <p id="statusMsg" style="color: #475569; padding: 0 20px;">Registering your slot, please wait.</p>
+        <button id="closeBtn" onclick="location.reload()" class="btn" style="display:none; margin-top:25px; max-width: 200px;">Back</button>
+    </div>
+
+    <div class="glass-card">
+        <div class="header">
+            <div class="logo-row">
+                <img src="EDULEARN LOGO.png" alt="EDULEARN Logo" class="site-logo">
+                <img src="ITECH LOGO.png" alt="ITECH Logo" class="site-logo">
+            </div>
+            <h2>Teachers Training Registration</h2>
+            <p>2026 Professional Development Series</p>
+        </div>
+
+        <div class="timeline-container">
+            <div class="timeline-title">REGISTRATION COUNTDOWN</div>
+            <div id="countdown" class="countdown-text">Calculating time...</div>
+            <p id="lockMsg" class="registration-closed-msg">Form will unlock at exactly March 30, 2026, 12:00 PM (PH Time)</p>
+        </div>
+
+        <form id="regForm" class="form-locked">
+            <div class="form-section">
+                <div class="section-title">Section 1: Personal Details</div>
+                <div style="display: flex; gap: 15px;" class="flex-mobile">
+                    <div class="input-group" style="flex: 2;">
+                        <label for="firstname">First Name</label>
+                        <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
+                    </div>
+                    <div class="input-group" style="flex: 2;">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px;" class="flex-mobile">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="mi">M.I.</label>
+                        <input type="text" id="mi" name="mi" placeholder="Initial" maxlength="2">
+                    </div>
+                    <div class="input-group" style="flex: 2;">
+                        <label for="suffix">Suffix</label>
+                        <select id="suffix" name="suffix">
+                            <option value="None" selected>None</option>
+                            <option value="Jr.">Jr.</option>
+                            <option value="Sr.">Sr.</option>
+                            <option value="II">II</option>
+                            <option value="III">III</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <button type="button" id="nameConfirmBtn" class="confirm-btn">
+                        <span id="confirmIcon">⬜</span> Confirm name spelling for Certificate.
+                    </button>
+                    <input type="checkbox" id="nameCheckHidden" required style="display:none;">
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="input-group" style="flex: 0.5;">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="" disabled selected>Select...</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="specialization">Specialization/Subject</label>
+                        <input type="text" id="specialization" name="specialization" placeholder="e.g. Science, ICT" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="mobileInput">Contact Number</label>
+                        <input type="tel" name="mobile" id="mobileInput" placeholder="09XXXXXXXXX" maxlength="11" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Section 2: School Information</div>
+                <div class="input-group">
+                    <label for="institution">School Name</label>
+                    <input type="text" id="institution" name="institution" placeholder="Full School Name" required>
+                </div>
+                <div class="input-group">
+                    <label for="province">Province</label>
+                    <input type="text" id="province" name="province" placeholder="Enter Province" required>
+                </div>
+                <div class="input-group">
+                    <label for="position">Level Handled</label>
+                    <select id="position" name="position" required>
+                        <option value="" disabled selected>Select Level</option>
+                        <option value="Elementary">Elementary</option>
+                        <option value="Junior High">Junior High School</option>
+                        <option value="Senior High">Senior High School</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">Section 3: Training Selection</div>
+                <div class="input-group">
+                    <label for="dateSelect">Training Batch</label>
+                    <select id="dateSelect" name="schedule" required>
+                        <option value="" disabled selected>Select Batch</option>
+                        <option value="batch2">Batch 3 - May 25–29 2026</option>
+                    </select>
+                </div>
+
+                <p style="font-size: 0.85rem; font-weight: 800; color: #1e293b; margin-bottom: 2px;">Select Sessions:</p>
+                <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 12px; font-style: italic;">Note: Maximum 1 session per AM and 1 per PM daily.</p>
+                
+                <div class="topic-scroll-area" style="max-height: 450px; overflow-y: auto; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1.5px solid #e2e8f0;">
+                    
+                    <div class="day-header">DAY 1 - ROBOTICS</div>
+                    <div class="time-label">MORNING</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D1-AM-RoboStarter"> RoboClass - RoboStarter K A Stepping Stone in Robotics World</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D1-AM-RoboJuno-1"> RoboClass - RoboJuno 1 Learn to manipulate CyberPi as a Handheld Console </label>
+                    
+                    <div class="time-label">AFTERNOON</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D1-PM-RoboPrime-1"> RoboClass - RoboPrime 1 Introduction to CodeyRocky using the Mobile App</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D1-PM-Robo-Juno-2">RoboClass - RoboJuno 2 Let's Code and Assemble mBot2</label>
+
+                    <div class="day-header">DAY 2 - ROBOTICS</div>
+                    <div class="time-label">MORNING</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D2-AM-Codey-Rocky"> RoboClass - RoboPrime 2 -3 Let's Code with CodeyRocky</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D2-AM-Arduino-Intro"> Arduino 1 - Starting with Arduino</label>
+                    
+                    <div class="time-label">AFTERNOON</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D2-PM-MicroBit"> RoboClass - RoboPrime 4-5 MicroBit: Your New Companion in Coding</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D2-PM-Arduino-Exp"> Arduino 2 - Exploring Arduino</label>
+
+                    <div class="day-header">DAY 3 - ICT</div>
+                    <div class="time-label">MORNING</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D3-AM-ICT-Essentials"> CompuThinkers K ICT Essentials for Young Learners, CompuThinkers 1 Computer Fundamentals for Kids</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D3-AM-Productivity-Tools"> Productivity Tools Word, Desktop Publishing and Online Collaboration Tools</label>
+                    
+                    <div class="time-label">AFTERNOON</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D3-PM-Scratch-Jr"> CompuThinkers 2 Basic Programming with Scratch Jr</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D3-PM-Web-Design">Web Design Basics: HTML and CSS Web Design and Concepts</label>
+
+                    <div class="day-header">DAY 4 - ICT</div>
+                    <div class="time-label">MORNING</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D4-AM-PowerPoint"> CompuThinkers 3 Working with PowerPoint</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D4-AM-Python"> Python Coding Essentials Learning to Code with Python</label>
+                    
+                    <div class="time-label">AFTERNOON</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D4-PM-HTML-Basics"> CompuThinkers 4 HTML Basics</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D4-PM-Java-Intro"> Java Programming Fundamentals Introduction to Programming with Java</label>
+
+                    <div class="day-header">DAY 5 - ICT</div>
+                    <div class="time-label">MORNING</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D5-AM-Multimedia"> CompuThinkers 5 - 6 Multimedia Creation and Digital Presentation</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D5-AM-Ecommerce"> E-Commerce: Business in the Digital Age How to Market Your Product Online?</label>
+                    
+                    <div class="time-label">AFTERNOON</div>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D5-PM-Scratch-mBlock"> Scratch Fun with mBlock Game Features Code, Games, and Learn</label>
+                    <label class="topic-item"><input type="checkbox" name="topic" value="D5-PM-Empowerment"> Empowerment Technologies for Today's Generation Understanding Media and Technology in the Digital Age</label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="check-container" style="display: flex; align-items: flex-start; cursor: pointer;">
+                    <input type="checkbox" required style="display: none;" id="finalCheck">
+                    <span class="checkmark"></span>
+                    <span style="font-size: 0.85rem; color: #475569; line-height: 1.4;">I confirm my attendance for the selected training sessions.</span>
+                </label>
+            </div>
+            <button type="submit" class="btn" id="submitBtn" disabled>Registration Starts March 30</button>
+        </form>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwcACq0W4S6ChVoCWp2911qwBeAMfPU9cJmgHtNbOh6jrzAaWPy1Znme0BXUf9u4hvq/exec';
+
+        // --- COUNTDOWN LOGIC ---
+        const startTime = new Date("2026-03-30T12:00:00+08:00").getTime();
+        function updateCountdown() {
+            const distance = startTime - new Date().getTime();
+            const btn = document.getElementById('submitBtn');
+            const form = document.getElementById('regForm');
+            
+            if (distance < 0) {
+                form.classList.remove('form-locked');
+                btn.disabled = false;
+                btn.innerText = "Submit Registration";
+                document.getElementById('countdown').innerHTML = "REGISTRATION IS NOW OPEN";
+                document.getElementById('countdown').style.color = "#059669";
+                document.getElementById('lockMsg').style.display = "none";
+                return;
+            }
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById('countdown').innerHTML = `${d}d ${h}h ${m}m ${s}s`;
+        }
+        setInterval(updateCountdown, 1000); updateCountdown();
+
+        // --- NAME CONFIRMATION ---
+        const nameConfirmBtn = document.getElementById('nameConfirmBtn');
+        nameConfirmBtn.addEventListener('click', () => {
+            const check = document.getElementById('nameCheckHidden');
+            check.checked = !check.checked;
+            nameConfirmBtn.classList.toggle('active', check.checked);
+            document.getElementById('confirmIcon').innerText = check.checked ? "✅" : "⬜";
+        });
+
+        // --- SMART SELECTION LOGIC ---
+        const allCheckboxes = document.querySelectorAll('input[name="topic"]');
+        allCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    const val = this.value; // e.g., "D1-AM-ICT-Essentials"
+                    const day = val.split('-')[0]; // "D1"
+                    const time = val.split('-')[1]; // "AM"
+                    
+                    // Uncheck others in the same Day/Time slot
+                    allCheckboxes.forEach(other => {
+                        if (other !== this && other.value.startsWith(`${day}-${time}-`)) {
+                            other.checked = false;
+                            other.parentElement.classList.remove('selected');
+                        }
+                    });
+                    this.parentElement.classList.add('selected');
+                } else {
+                    this.parentElement.classList.remove('selected');
+                }
+            });
+        });
+
+        // --- SUBMIT HANDLER ---
+        document.getElementById('regForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!document.getElementById('nameCheckHidden').checked) { 
+                alert("Please confirm your name spelling first."); 
+                return; 
+            }
+
+            const selected = Array.from(document.querySelectorAll('input[name="topic"]:checked'));
+            if (selected.length === 0) { 
+                alert("Please select at least one training session."); 
+                return; 
+            }
+
+            const overlay = document.getElementById('loadingOverlay');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            submitBtn.disabled = true;
+            overlay.style.display = 'flex';
+            
+            try {
+                const formData = new FormData(e.target);
+                const dataObj = {};
+                
+                formData.forEach((value, key) => { 
+                    if (key !== 'topic') dataObj[key] = value; 
+                });
+
+                const fname = dataObj.firstname.trim();
+                const lname = dataObj.lastname.trim();
+                const suffix = (dataObj.suffix && dataObj.suffix !== "None") ? " " + dataObj.suffix : "";
+                dataObj['fullname'] = `${fname} ${lname}${suffix}`.replace(/\s+/g, ' ').toUpperCase();
+
+                const topicNames = selected.map(cb => cb.parentElement.innerText.trim());
+                const topicCodes = selected.map(cb => cb.value);
+                
+                dataObj['workshop'] = topicNames.join(" | ");
+                dataObj['topic'] = topicCodes.join(", ");
+                
+                const response = await fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: new URLSearchParams(dataObj) 
+                });
+                
+                const result = await response.text();
+
+                if (result === "Success") {
+                    document.getElementById('statusTitle').innerText = "Registration Successful!";
+                    document.getElementById('statusMsg').innerText = `Registered for ${selected.length} sessions.`;
+                } else if (result === "DUPLICATE_EMAIL") {
+                    document.getElementById('statusTitle').innerText = "Already Registered";
+                    document.getElementById('statusMsg').innerText = "Email already in system.";
+                    submitBtn.disabled = false;
+                } else { throw new Error(result); }
+            } catch (err) {
+                document.getElementById('statusTitle').innerText = "Submission Error";
+                document.getElementById('statusMsg').innerText = "Please try again.";
+                submitBtn.disabled = false;
+            } finally { 
+                document.getElementById('closeBtn').style.display = 'block'; 
+            }
+        });
+    </script>
+</body>
+</html>
